@@ -26,6 +26,7 @@ data <- read_excel("data_rls_uti.xlsx",sheet=1,na="")
 str(data)
 ```
 Analizando la información disponemos de `r nrow(data)` observaciones de `r ncol(data)` variables.
+
 Se requiere explicar la varible `r names(data)[1]` en función del regresor `r names(data)[2]`. En lugar de utilizar la función `View(data)` para vizualizar el conjunto de datos empleamos la función `datatable()`
 del paquete `DT()`, esta función permite crear un __HTML widget__ para mostrar data rectangular:
 
@@ -50,6 +51,7 @@ Ajustando un modelo de regresión para las variables `r names(data)[1]` y `r nam
 la función `lm()` obtenemos el siguiente resultado:
 
 ```{r,echo=TRUE,eval=TRUE}
+
 reg <- lm(Utilidad~Ventas, data)
 summary(reg)
 ```
@@ -59,15 +61,17 @@ $$\hat{`r substring(names(data)[1],1,2)`} = `r reg$coefficients[1]` + `r reg$coe
 
 ### Interpretación
 __Interpretación modelo:__ _Si `r names(data)[2]` se incrementa en una unidad, entonces `r names(data)[1]`
-`r tex <-"aumenta"; if(reg$coefficients[2]<0) (tex<-"disminuye");tex` en promedio `r reg$coefficients[2]`
+`r tex <-"aumenta"; if(reg$coefficients[2]<0) (tex<-"disminuye");tex` en promedio `r abs(reg$coefficients[2])`
 unidades._
 
 __Interpretación $R^2$:__ _El modelo de regresión lineal obtenido explica el `r paste(100*summary(reg)$r.squared,"%")` de la variabilidad total._
 
 ### Pruebas de hipótesis
 
-__Ejercicio lector__
-
+Como $t= `r summary(reg)$coefficients[2,3]`$ es `r tex<-"menor"; if(summary(reg)$coefficients[2,3]>qt(0.975 , df =nrow(data)-2)) tex<-"mayor"; tex` que 
+$t_{`r (nrow(data)-2)`}(\frac{\alpha}{2})= `r qt(0.975 , df =nrow(data)-2)`$
+`r tex<-"rechazo"; if(summary(reg)$coefficients[1,3]>qt(0.975 , df =nrow(data)-2)) tex<-"no rechazo"; tex`
+$H_0: \beta_2=0$.
 
 
 ### Análisis de varianza
